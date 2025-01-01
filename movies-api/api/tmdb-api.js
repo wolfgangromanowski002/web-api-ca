@@ -32,4 +32,15 @@ export const getGenres = async () => {
     } catch (error) {
         throw error;
     }
+
+
+    router.get('/popular', async (req, res) => {
+        try {
+            const popularMovies = await tmdbApi.getPopularMovies();
+            res.status(200).json(popularMovies);
+        }catch (error) {
+            res.status(500).json({ message: error.message });
+        }});
+    
+
 };

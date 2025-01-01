@@ -46,4 +46,27 @@ router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
     res.status(200).json(upcomingMovies);
 }));
 
+router.get('/popular', asyncHandler(async (req, res) => {
+    try {
+        const popularMovies = await getPopularMovies();
+        res.status(200).json(popularMovies);
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}));
+router.get('/search', asyncHandler(async (req, res) => {
+    const query = req.query.query;
+    if (!query) {
+        return res.status(400).json({ success: false, msg: 'Query parameter is required.' });
+    }
+
+    try {
+        const searchResults = await searchMovies(query);
+        res.status(200).json(searchResults);
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+}));
+
+
 export default router;
