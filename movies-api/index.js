@@ -14,6 +14,7 @@ const port = process.env.PORT;
 
 
 app.use(cors({
+  origin: process.env.CORS_ORIGIN,
   optionsSuccessStatus: 200,
   credentials: true,}));
 
@@ -22,7 +23,7 @@ app.use(express.json());
 app.use('/api/users', usersRouter);
 
 app.use(defaultErrHandler);
-const PORT = process.env.PORT || 8080;
+
 
 app.listen(port, () => {
   console.info(`Server running at ${port}`);

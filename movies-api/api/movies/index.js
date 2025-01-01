@@ -1,24 +1,46 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies } from '../tmdb-api';
+import { getUpcomingMovies, getPopularMovies, searchMovies } from '../tmdb-api'; // Ensure these functions are exported
 
 const router = express.Router();
+router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
+    const upcomingMovies = await getUpcomingMovies();
+    res.status(200).json({ success: true, data: upcomingMovies });
+}));
+router.get('/tmdb/popular', asyncHandler(async (req, res) => {
+    try {
+        const popularMovies = await getPopularMovies();
+        res.status(200).json({ success: true, data: popularMovies });
+    } catch (error) {
+        console.error('Error fetching popular movies:', error.message);
+        res.status(500).json({ success: false, msg: 'Failed to fetch popular movies.' });
+    }
+}));
+router.get('/tmdb/search', asyncHandler(async (req, res) => {
+    const query = req.query.query;
+    if (!query) {
+        return res.status(400).json({ success: false, msg: 'Query parameter is required.' });
+    }
 
-// Updated GET '/' route with pagination
+    try {
+        const searchResults = await searchMovies(query);
+        res.status(200).json({ success: true, data: searchResults });
+    } catch (error) {
+        console.error('Error searching movies:', error.message);
+        res.status(500).json({ success: false, msg: 'Failed to search movies.' });
+    }
+}));
 router.get('/', asyncHandler(async (req, res) => {
-    let { page = 1, limit = 10 } = req.query; // Destructure page and limit with default values
-    [page, limit] = [+page, +limit]; // Convert to numeric values
+    let { page = 1, limit = 10 } = req.query; 
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
 
-    // Execute count and find queries in parallel
     const [total_results, results] = await Promise.all([
         movieModel.estimatedDocumentCount(),
-        movieModel.find().limit(limit).skip((page - 1) * limit)
-    ]);
+        movieModel.find().limit(limit).skip((page - 1) * limit)]);
+    const total_pages = Math.ceil(total_results / limit);
 
-    const total_pages = Math.ceil(total_results / limit); // Calculate total number of pages
-
-    // Construct the response object
     const returnObject = {
         page,
         total_pages,
@@ -29,44 +51,14 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json(returnObject);
 }));
 
-// Get movie details
 router.get('/:id', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id, 10);
     const movie = await movieModel.findByMovieDBId(id);
     if (movie) {
-        res.status(200).json(movie);
+        res.status(200).json({ success: true, data: movie });
     } else {
-        res.status(404).json({ message: 'The movie you requested could not be found.', status_code: 404 });
+        res.status(404).json({ success: false, msg: 'The movie you requested could not be found.' });
     }
 }));
-
-// Get upcoming movies from TMDB
-router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
-    const upcomingMovies = await getUpcomingMovies();
-    res.status(200).json(upcomingMovies);
-}));
-
-router.get('/popular', asyncHandler(async (req, res) => {
-    try {
-        const popularMovies = await getPopularMovies();
-        res.status(200).json(popularMovies);
-    } catch (error) {
-        res.status(500).json({ success: false, msg: error.message });
-    }
-}));
-router.get('/search', asyncHandler(async (req, res) => {
-    const query = req.query.query;
-    if (!query) {
-        return res.status(400).json({ success: false, msg: 'Query parameter is required.' });
-    }
-
-    try {
-        const searchResults = await searchMovies(query);
-        res.status(200).json(searchResults);
-    } catch (error) {
-        res.status(500).json({ success: false, msg: error.message });
-    }
-}));
-
 
 export default router;
