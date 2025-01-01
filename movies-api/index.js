@@ -13,13 +13,16 @@ const app = express();
 const port = process.env.PORT; 
 
 
-app.use(cors());
+app.use(cors({
+  optionsSuccessStatus: 200,
+  credentials: true,}));
+
 app.use('/api/movies', authenticate, moviesRouter);
 app.use(express.json());
 app.use('/api/users', usersRouter);
-app.use('/api/movies', moviesRouter); //ADD THIS BEFORE THE DEFAULT ERROR HANDLER.
 
 app.use(defaultErrHandler);
+const PORT = process.env.PORT || 8080;
 
 app.listen(port, () => {
   console.info(`Server running at ${port}`);
