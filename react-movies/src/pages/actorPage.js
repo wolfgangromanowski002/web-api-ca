@@ -1,30 +1,31 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext } from "react";
 import { useQuery } from "react-query";
+import { AuthContext } from "../contexts/AuthContext";
+import { getActors } from "../api/tmdb-api";
+import Spinner from "../components/spinner";
 
-const getPersonDetails = async (id) => {
-  const response = await fetch(
-    `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}`
-  );
-  return response.json();};
+const ActorsPage = () => {
+const { auth } = useContext(AuthContext);
+const { data, error, isLoading, isError } = useQuery(
 
-const ActorPage = () => {
-  const { id } = useParams();
-  const { data: person, isLoading } = useQuery(["person", id], () =>
-    getPersonDetails(id));
-  if (isLoading) {return <h1>loading</h1>;}
+    ["actors", auth.token],
+    () => getActors(auth.token),
+    { enabled: !!auth.token });
+
+  if (isLoading) return <Spinner />;
+  if (isError) return <h1>{error.message}</h1>;
+  const actors = data.data || [];
+
   return (
     <div>
-      <h1>{person.name}</h1>
-      <p>Biography: {person.biography}</p>
-      <p>Birthday: {person.birthday}</p>
-      {person.profile_path && (
-        <img
-          src={`https://image.tmdb.org/t/p/w500/${person.profile_path}`}
-          alt={person.name}
-          style={{ width: "300px" }}/>
-      )}
+      <h2>Actors from Mongo</h2>
+      <ul>
+        {actors.map((actor) => (
+          <li key={actor._id}>
+            {actor.name} (ID: {actor._id})
+          </li>))}
+      </ul>
     </div>
-  );};
+    );};
 
-export default ActorPage;
+export default ActorsPage;

@@ -16,6 +16,7 @@ import MovieRecommendationsPage from "./pages/movieRecommendationsPage";
 import ActorPage from "./pages/actorPage";
 import TrendingMoviesPage from "./pages/trendingMoviesPage";
 import PrivateRoute from "./components/privateRoute";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
