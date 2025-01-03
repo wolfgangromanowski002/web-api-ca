@@ -21,7 +21,7 @@ function App() {
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/" component={HomePage} />
                         <PrivateRoute exact path="/favorite-movies" component={FavoriteMoviesPage} />
-                        <Route component={NotFound} />
+                        <PrivateRoute exact path="/movies/top_rated" component={TopRatedMoviesPage} />                        <Route component={NotFound} />
                     </Switch>
                 </Router>
             </MoviesContextProvider>

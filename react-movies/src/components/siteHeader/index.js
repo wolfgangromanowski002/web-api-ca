@@ -98,7 +98,16 @@ const SiteHeader = ({ history }) => {
                   </Button>
                 ))}
               </>
+
             )}
+
+            <Button
+              color="inherit"
+              onClick={() => handleMenuSelect("/movies/top_rated")}>
+              Top Rated
+            </Button>
+
+
         </Toolbar>
       </AppBar>
       <Offset />

@@ -200,3 +200,19 @@ export const searchMovies = async (query, token) => {
   }
   return response.json();
 };
+
+export const getTopRatedMovies = async (token) => {
+  const response = await fetch("/api/movies/tmdb/top_rated", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
+  if (!response.ok) {
+    const errData = await response.json();
+    throw new Error(errData.msg || "Failed to fetch top-rated movies.");
+  }
+  return response.json();
+};
+
+
