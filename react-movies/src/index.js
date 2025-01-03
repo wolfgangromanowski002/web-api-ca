@@ -14,6 +14,8 @@ import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import PopularMoviesPage from "./pages/popularMoviesPage";
 import MovieRecommendationsPage from "./pages/movieRecommendationsPage";
 import ActorPage from "./pages/actorPage";
+import TrendingMoviesPage from "./pages/trendingMoviesPage";
+import PrivateRoute from "./components/privateRoute";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -31,16 +33,16 @@ const App = () => {
         <SiteHeader />
         <MoviesContextProvider>
           <Routes>
-          
-          <Route path="/person/:id" element={<ActorPage />} />
-          <Route path="/movies/:id/recommended" element={<MovieRecommendationsPage />} />
-          <Route path="/movies/popular" element={<PopularMoviesPage />} />
+            <Route path="/person/:id" element={<ActorPage />} />
+            <Route path="/movies/:id/recommended" element={<MovieRecommendationsPage />} />
+            <Route path="/movies/popular" element={<PopularMoviesPage />} />
             <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
             <Route path="/reviews/form" element={<AddMovieReviewPage />} />
             <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
             <Route path="/reviews/:id" element={<MovieReviewPage />} />
             <Route path="/movies/:id" element={<MoviePage />} />
-            <Route exact path="/movies/top_rated" element={<TopRatedMoviesPage/>} /> 
+            <Route path="/movies/top_rated" element={<TopRatedMoviesPage/>} /> 
+            <PrivateRoute path="/movies/trending" element={<TrendingMoviesPage/>} />
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

@@ -215,4 +215,14 @@ export const getTopRatedMovies = async (token) => {
   return response.json();
 };
 
-
+export const getTrendingMovies = async (token) => {
+  const response = await fetch("/api/movies/tmdb/trending", {
+    method: "GET",
+    headers: {
+          "Content-Type": "application/json",
+          Authorization: token,},});
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.msg || "Failed to fetch trending movies.");}
+    return response.json(); 
+};

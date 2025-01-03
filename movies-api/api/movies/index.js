@@ -2,6 +2,7 @@ import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
 import { getUpcomingMovies, getPopularMovies, searchMovies, getTopRatedMovies } from '../tmdb-api';
+import { getTrendingMovies } from "../tmdb-api";
 
 const router = express.Router();
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
@@ -69,5 +70,15 @@ router.get('/tmdb/top_rated', asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, msg: 'Failed to fetch top-rated movies.' });
   }
 }));
+
+router.get("/tmdb/trending", asyncHandler(async (req, res) => {
+    try {
+      const trending = await getTrendingMovies();
+      res.status(200).json({ success: true, data: trending });
+    } catch (error) {
+      console.error("Error fetching trending movies:", error.message);
+      res.status(500).json({ success: false, msg: "Failed to fetch trending movies." });
+    }}));
+
 
 export default router;

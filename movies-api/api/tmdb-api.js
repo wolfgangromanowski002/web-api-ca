@@ -81,6 +81,24 @@ export const loginUser = async (username, password) => {
   return data;
 };
 
+export const getTrendingMovies = async () => {
+    try {
+      // For daily trending
+      const response = await fetch(
+        `https://api.themoviedb.org/3/trending/movie/day?api_key=${process.env.TMDB_KEY}`
+      );
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.status_message || "Failed to fetch trending movies");
+      }
+  
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  };
+
 
 // **New Function: Get Genres from TMDB**
 export const getGenres = async () => {
@@ -100,5 +118,10 @@ export const getGenres = async () => {
     }
 
 
+
+
+
+
+    
     
 };
