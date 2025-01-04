@@ -8,20 +8,31 @@ const router = express.Router(); // eslint-disable-line
 
 
 router.get('/', authenticate, asyncHandler(async (req, res) => {
-    const users = await User.find();
+const users = await User.find();
     res.status(200).json(users);}));
 
-router.post('/register', asyncHandler(async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({ success: false, msg: 'username and password are required.' });}
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-        return res.status(409).json({ success: false, msg: 'username already exists.' }); }
-    const newUser = new User({ username, password });
-    await newUser.save();
-    res.status(201).json({ success: true, msg: 'User successfully registered.' });
-}));
+    router.post('/register', asyncHandler(async (req, res) => {
+        try {
+          const { username, password } = req.body;
+          if (!username || !password) {
+            return res.status(400).json({ success: false, msg: 'username and password are required.' });
+          }
+          const existingUser = await User.findOne({ username });
+          if (existingUser) {
+            return res.status(409).json({ success: false, msg: 'username already exists.' });
+          }
+          const newUser = new User({ username, password });
+          await newUser.save();
+      
+          res.status(201).json({ success: true, msg: 'User successfully registered.' });
+        } catch (err) {
+          if (err.name === 'ValidationError') {
+
+const messages = Object.values(err.errors).map(e => e.message);
+            return res.status(400).json({ success: false, msg: messages.join(' ') });}
+          console.error('Registration Error:', err);
+          return res.status(500).json({ success: false, msg: 'Intenal server error while registering user.' });
+        }}));
 
 router.post('/login', asyncHandler(async (req, res) => {
     const { username, password } = req.body;

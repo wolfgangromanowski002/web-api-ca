@@ -99,6 +99,45 @@ export const getTrendingMovies = async () => {
     }
   };
 
+export const getActors = async (token) => {
+    const response = await fetch("/api/actors", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+               },});
+    if (!response.ok) {
+      const errorData = await response.json();
+    throw new Error(errorData.msg || "Failed to get actors");}
+    return response.json();};
+
+
+export const createActor = async (actorData, token) => {
+    const response = await fetch("/api/actors", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,},
+      body: JSON.stringify(actorData),});
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.msg || "Failed to create actor");}
+    return data;
+  };
+
+export const getDiscoverMovies = async () => {
+    try {
+    const response = await fetch(
+        `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
+      );
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.status_message || "Failed to fetch discover movies");}
+      return await response.json();
+    } catch (error) {
+      throw error;
+    }
+  };
+
 
 // **New Function: Get Genres from TMDB**
 export const getGenres = async () => {

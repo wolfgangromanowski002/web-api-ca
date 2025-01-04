@@ -36,4 +36,39 @@ router.post("/", authenticate, asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, msg: "Failed to create actor." });
 }}));
 
+router.put("/:id", authenticate, asyncHandler(async (req, res) => {
+  try {
+    const actorId = req.params.id;
+    const { name, birthday, biography, tmdbId } = req.body;
+    const updatedActor = await Actor.findByIdAndUpdate(
+      actorId,
+      { name, birthday, biography, tmdbId },
+      { new: true });
+
+  if (!updatedActor) {
+      return res.status(404).json({ success: false, msg: "Actor not found" });
+    }
+    res.status(200).json({ success: true, data: updatedActor });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Failed to update actor." });
+  }
+}));
+
+router.delete("/:id", authenticate, asyncHandler(async (req, res) => {
+  try {
+    const actorId = req.params.id;
+    const deletedActor = await Actor.findByIdAndDelete(actorId);
+    if (!deletedActor) {
+      return res.status(404).json({ success: false, msg: "Actor not found" });
+    }
+    res.status(200).json({ success: true, msg: "Actor deleted successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Failed to delete actor." });
+  }
+}));
+
+
+
 export default router;
