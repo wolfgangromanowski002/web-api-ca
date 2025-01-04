@@ -1,53 +1,68 @@
 # Assignment 2 - Web API.
 
-Name: Your Name
+Name: Wolfgang Romanowski
 
 ## Features.
 
-A bullet-point list of the ADDITIONAL features you have implemented in the API **THAT WERE NOT IN THE LABS** (or modifications to existing features)
- 
- + Feature 1 
- + Feature 2 
- + Feature 3 
- + etc
+An error at one point occured and I am unsure where, I tried fixing it alongside ChatGPT but I am unable to, I tried going backwardss in past commits but it doesnt work anymore either, I assume this would be due to the key but in all honesty I am unsure, for whatever partials it may be worth, please just judge off of the code, however a video will not be supplied due to this, i have attmepted to reconstruct it and it was working originally up till about the second last commit, I am presently unable to fix it and unsure where the error lies in the first place.
+
+Below are the additional features we implemented beyond the labs:
+ + Mongo Actor Collection routes
+ + Advanced password validation
+ + Several new TMDB endpoints 
+ + User specific favorites stored in mongo
 
 ## Setup requirements.
 
 [ Outline any non-standard setup steps necessary to run your app locally after cloning the repo.]
 
+(Default process necessary)
+
+cd movies-api && npm install
+cd react-movies && npm install
+
+Create .env file specified below
+
+cd movies-api && npm run dev
+cd react-movie && npm start
+
+API should run at 8080 unless otherwise specified in .env, React dev server should run at localhost:3000
+
 ## API Configuration
 
-Describe any configuration that needs to take place before running the API. For example, creating an `.env` file and what variables to put in it. Give an example of how this might be done.
-
-REMEMBER: DON'T PUT YOUR OWN USERNAMES/PASSWORDS/AUTH KEYS IN THE README OR ON GITHUB, just placeholders as indicated below:
-
+Create .env file with following data:
 ______________________
-NODEENV=development
-PORT=8080
-HOST=
 mongoDB=YourMongoURL
-seedDb=true
+PORT=8080
 secret=YourJWTSecret
+REACT_APP_TMDB_KEY
+FAST_REFRESH=false
 ______________________
 
 ## API Design
-Give an overview of your web API design, perhaps similar to the following: 
-
-- /api/movies | GET | Gets a list of movies 
-- /api/movies/{movieid} | GET | Gets a single movie 
-- /api/movies/{movieid}/reviews | GET | Get all reviews for movie 
-- /api/movies/{movieid}/reviews | POST | Create a new review for Movie 
-
-If you have your API design on an online platform or graphic, please link to it (e.g. [Swaggerhub](https://app.swaggerhub.com/)).
+  - GET /api/movies/tmdb/discover (from TMDB)
+  - GET /api/movies/tmdb/upcoming (from TMDB)
+  - GET /api/movies/tmdb/popular
+  - GET /api/movies/tmdb/search?query=someQuery
+  - GET /api/movies/tmdb/top_rated
+  - GET /api/movies/tmdb/trending
+  - GET /api/movies/favorite
+  - POST /api/movies/favorite
+  - GET /api/actors
+  - GET /api/users
 
 ## Security and Authentication
 
-Give details of authentication/security implemented on the API (e.g. passport/sessions). Indicate which routes are protected.
+JWT based authentication. Password hashing with bcrypt
+Password has to at minimum be 8 chars and includes letter, number and special characters.
 
 ## Integrating with React App
 
-Describe how you integrated your React app with the API. List the views that use your Web API instead of the TMDB API. Describe any other updates to the React app from Assignment One.
+All movie requests go to the link instead of the raw TMDB
+React app uses react query to fetch from endpoints
+Favorites h ave become a feature for logged in users. React app passes JWT token in Authorization header to read and modify favorites
+Theres also a dedicated Actorspage which fetches from GET/api/actors. if youre not logged in you do not recieve a token.
 
 ## Independent learning (if relevant)
 
-Briefly explain any non-standard features developed for the app.   
+attempted to implement more user friendly errors.
